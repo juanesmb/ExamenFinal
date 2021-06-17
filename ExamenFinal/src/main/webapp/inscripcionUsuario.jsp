@@ -5,7 +5,7 @@
 <html>
 <head>
 <meta charset="ISO-8859-1">
-<title>Insert title here</title>
+<title>Registro de usuarios</title>
 <!-- CSS only -->
 <link
 	href="https://cdn.jsdelivr.net/npm/bootstrap@5.0.1/dist/css/bootstrap.min.css"
@@ -21,7 +21,7 @@
 					<div class="collapse navbar-collapse" id="navbarNav">
 						<ul class="navbar-nav">
 						<li>
-							<!-- <a href="<%=request.getContextPath()%>/inscripcionVotante" class="nav-link">Inscripción de votantes</a> -->
+							<!-- <a href="<%=request.getContextPath()%>/" class="nav-link"></a> -->
 						</li>
 					</ul>
 					</div>
@@ -35,29 +35,22 @@
 	
 	<div class="container">
 		<div class="row">
-			<h2></h2>
-			<form action="insertarCandidato" method="post">
-				<select class="form-select" aria-label="Default select example" name="eleccionId">
-					<option selected>Seleccione elección</option>
-					<c:forEach var="i" items="${elecciones}">
-						<option value="${i.id}">
-						"${i.nombre}"&nbsp;"${i.fechaInicio}"-"${i.fechaFin}"
-						</option>
-					</c:forEach>
-				</select> 
+			<h2>Registro de usuarios</h2>
+			<form action="registrarUsuario" method="post">
+				
 				<fieldset class="form-group">
-					<label>Documento</label> <input type="text" class="form-control"
-						name="documento" required="required" maxlength="15">
+					<label>Usuario</label> <input type="text" class="form-control"
+						name="usuario" required="required" maxlength="20">
+				</fieldset>
+				
+				<fieldset class="form-group">
+					<label>Email</label> <input type="text" class="form-control"
+						name="email" required="required" maxlength="100">
 				</fieldset>
 
 				<fieldset class="form-group">
-					<label>Nombre</label> <input type="text" class="form-control"
-						name="nombre" required="required" maxlength="50">
-				</fieldset>
-
-				<fieldset class="form-group">
-					<label>Apellido</label> <input type="text" class="form-control"
-						name="apellido" required="required" maxlength="50">
+					<label>Contraseña</label> <input type="text" class="form-control"
+						name="pass" required="required" maxlength="50">
 				</fieldset>
 				<br>
 				<button type="submit" class="btn btn-success">Registrar</button>
