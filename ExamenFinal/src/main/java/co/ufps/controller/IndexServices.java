@@ -1,6 +1,8 @@
 package co.ufps.controller;
 
 import java.io.IOException;
+import java.sql.SQLException;
+import java.util.List;
 
 import co.ufps.dao.RolDao;
 import co.ufps.dao.UsuarioDao;
@@ -55,13 +57,20 @@ public class IndexServices extends HttpServlet {
 			case "/validarRegistro":
 				validarRegistro(request,response);
 				break;
+			case "/showIniciarSesion":
+				showIniciarSesion(request,response);
+				break;
+			case "/iniciarSesion":
+				iniciarSesion(request,response);
+				break;
 			default:
 				showRegistroUsuario(request,response);
 				break;
 			}
-		}catch(ServletException e)
-		{
+		}catch(ServletException e){
 			throw new ServletException(e);
+		} catch (SQLException e) {
+			e.printStackTrace();
 		}
 	}
 
@@ -102,7 +111,7 @@ public class IndexServices extends HttpServlet {
 		
 	}
 	
-	private void validarRegistro(HttpServletRequest request, HttpServletResponse response) {
+	private void validarRegistro(HttpServletRequest request, HttpServletResponse response) throws IOException {
 		Integer id = Integer.parseInt(request.getParameter("id"));
 		
 		Usuario u = (Usuario) this.usuarioDao.find(id);
@@ -111,6 +120,29 @@ public class IndexServices extends HttpServlet {
 		
 		this.usuarioDao.update(u);
 		System.out.println("validacion exitosa");
+		response.sendRedirect("showIniciarSesion");
+	}
+	
+	private void showIniciarSesion(HttpServletRequest request, HttpServletResponse response) throws ServletException, SQLException, IOException{
+		List<Rol> roles = this.rolDao.list();
+		request.setAttribute("roles", roles);
+		
+		RequestDispatcher dispatcher = request.getRequestDispatcher("inicioSesion.jsp");
+		dispatcher.forward(request, response); 
+	}
+	
+	private void iniciarSesion(HttpServletRequest request, HttpServletResponse response) throws ServletException, SQLException, IOException{
+		String usuario = request.getParameter("usuario");
+		String contraseña = request.getParameter("pass");
+		Integer rolId = Integer.parseInt(request.getParameter("rolId"));
+		
+		Usuario u = (Usuario) this.usuarioDao.findByUser(usuario);
+		if(u!=null && u.getUsuario().equals(usuario) && u.getPass().equals(contraseña) && u.getRol().getId()==rolId.intValue())
+		{
+			System.out.println("inicio de sesion exitoso");
+		}else {
+			System.out.println("datos invalidos");
+		}
 	}
 
 }
