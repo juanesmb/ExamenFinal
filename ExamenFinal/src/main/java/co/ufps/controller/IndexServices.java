@@ -6,6 +6,7 @@ import co.ufps.dao.RolDao;
 import co.ufps.dao.UsuarioDao;
 import co.ufps.entities.Rol;
 import co.ufps.entities.Usuario;
+import co.ufps.util.ServicioEmail;
 import jakarta.servlet.RequestDispatcher;
 import jakarta.servlet.ServletConfig;
 import jakarta.servlet.ServletException;
@@ -20,6 +21,7 @@ import jakarta.servlet.http.HttpServletResponse;
 @WebServlet("/")
 public class IndexServices extends HttpServlet {
 	private static final long serialVersionUID = 1L;
+	String host = "http://localhost:8080/";
 	UsuarioDao usuarioDao;
 	RolDao rolDao;
     /**
@@ -42,7 +44,6 @@ public class IndexServices extends HttpServlet {
 	 */
 	protected void doGet(HttpServletRequest request, HttpServletResponse response) throws ServletException, IOException {
 		String action = request.getServletPath();
-		System.out.println(action);
 		try {
 			switch(action){
 			case "/showregistrarUsuario":
@@ -51,8 +52,10 @@ public class IndexServices extends HttpServlet {
 			case "/registrarUsuario":
 				registrarUsuario(request,response);
 				break;
+			case "/validarRegistro":
+				validarRegistro(request,response);
+				break;
 			default:
-				System.out.println("entrando por default");
 				showRegistroUsuario(request,response);
 				break;
 			}
@@ -90,7 +93,24 @@ public class IndexServices extends HttpServlet {
 		
 		this.usuarioDao.insert(u);
 		
-		System.out.print("registro exitoso");
+		u=this.usuarioDao.findByUser(usuario);
+		
+		String link = host+"/ExamenFinal/validarRegistro?id=" + u.getId();
+		ServicioEmail servicioEmail = new ServicioEmail("ejemplo.email.ufps@gmail.com", "nfrbdxklxggkgoko");
+		servicioEmail.enviarEmail(email, "Validación de inscripcion", "link para la validar su inscripción: " + link);
+		
+		
+	}
+	
+	private void validarRegistro(HttpServletRequest request, HttpServletResponse response) {
+		Integer id = Integer.parseInt(request.getParameter("id"));
+		
+		Usuario u = (Usuario) this.usuarioDao.find(id);
+		short state = 1;
+		u.setState(state);
+		
+		this.usuarioDao.update(u);
+		System.out.println("validacion exitosa");
 	}
 
 }

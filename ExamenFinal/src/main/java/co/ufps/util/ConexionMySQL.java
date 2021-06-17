@@ -56,9 +56,9 @@ public class ConexionMySQL <T> {
 			em.getTransaction().commit();
 		}catch(Exception e) {
 			e.printStackTrace();
-		}finally {
+		}/*finally {
 			em.close();
-		}
+		}*/
 	}
 	
 	public void update(T o)
@@ -69,9 +69,9 @@ public class ConexionMySQL <T> {
 			em.getTransaction().commit();
 		}catch(Exception e) {
 			e.printStackTrace();
-		}finally{
+		}/*finally{
 			em.close();
-		}
+		}*/
 	}
 	
 	public void delete(T o)
@@ -82,8 +82,8 @@ public class ConexionMySQL <T> {
 			em.getTransaction().commit();
 		}catch(Exception e) {
 			e.printStackTrace();
-		}finally {
+		}/*finally {
 			em.close();
-		}
+		}*/
 	}
 }
