@@ -5,8 +5,10 @@ import java.sql.SQLException;
 import java.util.List;
 
 import co.ufps.dao.RolDao;
+import co.ufps.dao.TypedbDao;
 import co.ufps.dao.UsuarioDao;
 import co.ufps.entities.Rol;
+import co.ufps.entities.Typedb;
 import co.ufps.entities.Usuario;
 import co.ufps.util.ServicioEmail;
 import jakarta.servlet.RequestDispatcher;
@@ -26,6 +28,7 @@ public class IndexServices extends HttpServlet {
 	String host = "http://localhost:8080/";
 	UsuarioDao usuarioDao;
 	RolDao rolDao;
+	TypedbDao typedbDao;
     /**
      * Default constructor. 
      */
@@ -39,6 +42,7 @@ public class IndexServices extends HttpServlet {
 	public void init(ServletConfig config) throws ServletException {
 		this.usuarioDao = new UsuarioDao();
 		this.rolDao = new RolDao();
+		this.typedbDao = new TypedbDao();
 	}
 
 	/**
@@ -62,6 +66,12 @@ public class IndexServices extends HttpServlet {
 				break;
 			case "/iniciarSesion":
 				iniciarSesion(request,response);
+				break;
+			case "/showDBForm":
+				showDBForm(request,response);
+				break;
+			case "/registrarDB":
+				registrarDB(request,response);
 				break;
 			default:
 				showRegistroUsuario(request,response);
@@ -140,9 +150,30 @@ public class IndexServices extends HttpServlet {
 		if(u!=null && u.getUsuario().equals(usuario) && u.getPass().equals(contraseña) && u.getRol().getId()==rolId.intValue())
 		{
 			System.out.println("inicio de sesion exitoso");
+			if(u.getRol().getId()==1)
+			{
+				response.sendRedirect("showDBForm");
+			}
 		}else {
 			System.out.println("datos invalidos");
 		}
+	}
+	
+	private void showDBForm(HttpServletRequest request, HttpServletResponse response) throws ServletException, SQLException, IOException{
+		RequestDispatcher dispatcher = request.getRequestDispatcher("registrarDB.jsp");
+		dispatcher.forward(request, response); 
+	}
+	
+	private void registrarDB(HttpServletRequest request, HttpServletResponse response) throws ServletException, SQLException, IOException{
+		String id = request.getParameter("id");
+		String descripcion = request.getParameter("descripcion");
+		String driver = request.getParameter("driver");
+		String adicional = request.getParameter("aditional");
+		
+		Typedb db = new Typedb(id,adicional,descripcion,driver);
+		
+		this.typedbDao.insert(db);
+		System.out.println("base de datos ingresada");
 	}
 
 }

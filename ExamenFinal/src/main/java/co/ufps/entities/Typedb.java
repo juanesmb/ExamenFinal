@@ -29,6 +29,15 @@ public class Typedb implements Serializable {
 
 	public Typedb() {
 	}
+	
+	
+
+	public Typedb(String id, String aditional, String description, String driver) {
+		this.id = id;
+		this.aditional = aditional;
+		this.description = description;
+		this.driver = driver;
+	}
 
 	public String getId() {
 		return this.id;
